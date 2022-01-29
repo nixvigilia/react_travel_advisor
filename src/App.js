@@ -7,8 +7,9 @@ import Map from "./components/Map/Map";
 
 const App = () => {
   const [places, setPlaces] = useState([]);
+  const [childClicked, setChildClicked] = useState(null);
   const [coordinates, setCoordinates] = useState({});
-  const [bounds, setBounds] = useState(null);
+  const [bounds, setBounds] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   // get the user's current location (latitude and longitude)
@@ -39,7 +40,7 @@ const App = () => {
       setIsLoading(true);
       // console.log(bounds);
       getPlacesData(bounds.sw, bounds.ne).then((resp) => {
-        console.log(resp);
+        // console.log(resp);
         setPlaces(resp);
       });
     }
@@ -51,13 +52,19 @@ const App = () => {
       <Header />
       <Grid container spacing={3} style={{ width: "100%" }}>
         <Grid item xs={12} md={4}>
-          <List />
+          <List
+            places={places}
+            childClicked={childClicked}
+            isLoading={isLoading}
+          />
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
             setCoordinates={setCoordinates}
             coordinates={coordinates}
             setBounds={setBounds}
+            places={places}
+            setChildClicked={setChildClicked}
           />
         </Grid>
       </Grid>
