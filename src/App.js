@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { CssBaseline, Grid } from "@material-ui/core";
-import { getPlacesData } from "./api";
+
+import { getPlacesData, getWeatherData } from "./api";
 import Header from "./components/Header/Header";
 import List from "./components/List/List";
 import Map from "./components/Map/Map";
 
 const App = () => {
+  const [type, setType] = useState("restaurants");
+  const [rating, setRating] = useState("");
+
+  const [coords, setCoords] = useState({});
+  const [bounds, setBounds] = useState(null);
+
+  const [weatherData, setWeatherData] = useState([]);
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [places, setPlaces] = useState([]);
+
+  const [autocomplete, setAutocomplete] = useState(null);
   const [childClicked, setChildClicked] = useState(null);
-  const [coordinates, setCoordinates] = useState({});
-  const [bounds, setBounds] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   // get the user's current location (latitude and longitude)
   useEffect(() => {
     getCurrentLocation();
     return () => {
-      setCoordinates({});
+      setCoords({});
     };
   }, []);
 
@@ -27,44 +36,76 @@ const App = () => {
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
-        setCoordinates({ lat: latitude, lng: longitude });
+        setCoords({ lat: latitude, lng: longitude });
       }
     );
   };
 
-  //  []) end of the useEffect --> dependency array
-  // The dependency array basically tells the hook to "only trigger when the dependency array changes".
-  // re-run every time the map changes [coordinates, bounds]
+  useEffect(() => {
+    const filtered = places.filter((place) => Number(place.rating) > rating);
+
+    setFilteredPlaces(filtered);
+  }, [rating]);
+
   useEffect(() => {
     if (bounds) {
       setIsLoading(true);
-      // console.log(bounds);
-      getPlacesData(bounds.sw, bounds.ne).then((resp) => {
-        // console.log(resp);
-        setPlaces(resp);
+
+      getWeatherData(coords.lat, coords.lng).then((data) =>
+        setWeatherData(data)
+      );
+
+      getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
+        setPlaces(data.filter((place) => place.name && place.num_reviews > 0));
+        setFilteredPlaces([]);
+        setRating("");
+        setIsLoading(false);
       });
     }
-  }, [bounds]);
+  }, [bounds, type]);
+
+  const onLoad = (autoC) => setAutocomplete(autoC);
+
+  const onPlaceChanged = () => {
+    const lat = autocomplete.getPlace().geometry.location.lat();
+    const lng = autocomplete.getPlace().geometry.location.lng();
+
+    setCoords({ lat, lng });
+  };
 
   return (
     <>
       <CssBaseline />
-      <Header />
+      <Header onPlaceChanged={onPlaceChanged} onLoad={onLoad} />
       <Grid container spacing={3} style={{ width: "100%" }}>
         <Grid item xs={12} md={4}>
           <List
-            places={places}
-            childClicked={childClicked}
             isLoading={isLoading}
+            childClicked={childClicked}
+            places={filteredPlaces.length ? filteredPlaces : places}
+            type={type}
+            setType={setType}
+            rating={rating}
+            setRating={setRating}
           />
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid
+          item
+          xs={12}
+          md={8}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Map
-            setCoordinates={setCoordinates}
-            coordinates={coordinates}
-            setBounds={setBounds}
-            places={places}
             setChildClicked={setChildClicked}
+            setBounds={setBounds}
+            setCoords={setCoords}
+            coords={coords}
+            places={filteredPlaces.length ? filteredPlaces : places}
+            weatherData={weatherData}
           />
         </Grid>
       </Grid>

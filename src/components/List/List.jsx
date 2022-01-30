@@ -10,37 +10,31 @@ import {
 } from "@material-ui/core";
 
 import PlaceDetails from "../PlaceDetails/PlaceDetails";
-import useStyles from "./styles";
+import useStyles from "./styles.js";
 
-const List = ({ places, childClicked, isLoading }) => {
-  const classes = useStyles();
-  const [type, setType] = useState("restaurants");
-  const [rating, setRating] = useState("");
+const List = ({
+  places,
+  type,
+  setType,
+  rating,
+  setRating,
+  childClicked,
+  isLoading,
+}) => {
   const [elRefs, setElRefs] = useState([]);
-
-  console.log({ childClicked });
+  const classes = useStyles();
 
   useEffect(() => {
-    // setElRefs((refs) =>
-    //   Array(places.length)
-    //     .fill()
-    //     .map((_, i) => refs[i] || createRef())
-    // );
-    // SAME AS ABOVE
-    // fill() starting to filling the array
-    // map returning refs[i] or if ref doesn't exist then createRef()
-    // const refs = Array(places?.length)
-    //   .fill()
-    //   .map((_, i) => refs[i] || createRef());
-    // console.log("refs", refs);
-    // setElRefs(refs);
+    setElRefs((refs) =>
+      Array(places.length)
+        .fill()
+        .map((_, i) => refs[i] || createRef())
+    );
   }, [places]);
 
   return (
     <div className={classes.container}>
-      <Typography variant="h4">
-        Restaurants, Hotels & Attractions around you
-      </Typography>
+      <Typography variant="h4">Food & Dining around you</Typography>
       {isLoading ? (
         <div className={classes.loading}>
           <CircularProgress size="5rem" />
@@ -74,11 +68,11 @@ const List = ({ places, childClicked, isLoading }) => {
           </FormControl>
           <Grid container spacing={3} className={classes.list}>
             {places?.map((place, i) => (
-              <Grid item key={i} xs={12}>
+              <Grid ref={elRefs[i]} key={i} item xs={12}>
                 <PlaceDetails
+                  selected={Number(childClicked) === i}
+                  refProp={elRefs[i]}
                   place={place}
-                  // selected={Number(childClicked) === i}
-                  // refProp={elRefs[i]}
                 />
               </Grid>
             ))}

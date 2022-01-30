@@ -18,3 +18,5 @@ real-time weather
 yarn add @material-ui/core @material-ui/icons @material-ui/lab @react-google-maps/api axios google-map-react
 
 https://rapidapi.com/apidojo/api/travel-advisor/
+
+snazzymaps.com

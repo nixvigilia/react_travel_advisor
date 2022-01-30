@@ -17,7 +17,6 @@ import useStyles from "./styles.js";
 
 const PlaceDetails = ({ place, selected, refProp }) => {
   if (selected)
-    // scrollIntoView is a built-in method on HTML element
     refProp?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   const classes = useStyles();
 
@@ -48,9 +47,14 @@ const PlaceDetails = ({ place, selected, refProp }) => {
             {place.price_level}
           </Typography>
         </Box>
-        {place?.awards?.map((award, i) => (
+        <Box display="flex" justifyContent="space-between">
+          <Typography component="legend">Ranking</Typography>
+          <Typography gutterBottom variant="subtitle1">
+            {place.ranking}
+          </Typography>
+        </Box>
+        {place?.awards?.map((award) => (
           <Box
-            key={i}
             display="flex"
             justifyContent="space-between"
             my={1}
