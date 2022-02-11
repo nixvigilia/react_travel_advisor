@@ -6,7 +6,7 @@
 - [Travel Advisor API powered by Rapid API](https://rapidapi.com/apidojo/api/travel-advisor)
 - [Open Weather Map API powered by Rapid API](https://rapidapi.com/community/api/open-weather-map).
 
-![Screenshot 2022-02-11 013312](https://user-images.githubusercontent.com/34468449/153463969-aa9b008d-8a35-4e5f-b839-fe16b899c6fc.png)
+![Screenshot 2022-02-11 113514](https://user-images.githubusercontent.com/34468449/153533853-c71d30c1-d9d0-4dd1-a63b-02ef7a2fd7c4.png)
 
 ## Installation and Setup Instructions
 
