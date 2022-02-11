@@ -58,7 +58,7 @@ https://nixoy-travel-advisor.netlify.app/
 - improve security by using environment variables
 - creating user interfaces using material ui
 - google maps api
-- fetching data using rapid api
+- fetching data from rapid api
 - real-time weather
 
 ## Technologies Used
